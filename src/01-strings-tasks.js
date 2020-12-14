@@ -224,18 +224,18 @@ function getRectangleString(width, height) {
  *
  */
 function encodeToRot13(str) {
-  return str.replace(/[a-zA-Z]/g, (char) => {
-    const isUpperCase = char === char.toUpperCase();
-    const charCode = char.toUpperCase().charCodeAt(0);
-    const firstCharCode = 65;
-    const lastCharCode = 90;
-    const ROTShift = 13;
-    const shiftedCode = charCode + ROTShift;
-    const newCharCode = shiftedCode <= lastCharCode
-      ? shiftedCode : firstCharCode + (shiftedCode % lastCharCode) - 1;
-    const newChar = String.fromCharCode(newCharCode);
-    return isUpperCase ? newChar : newChar.toLowerCase();
-  });
+  let result = '';
+  let range = 0;
+  for (let i = 0; i < str.length; i += 1) {
+    const char = str.charCodeAt(i);
+    if (char >= 65 && char <= 90) range = 65;
+    if (char >= 97 && char <= 122) range = 97;
+    const symbol = char + (-1 * Math.trunc((char - range) / 13) * 26 + 13);
+    if (range !== 0) result += String.fromCharCode(symbol);
+    else result += str[i];
+    range = 0;
+  }
+  return result;
 }
 
 /**
